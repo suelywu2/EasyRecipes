@@ -4,59 +4,49 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class Recipe implements Parcelable{
+public class Recipe implements Parcelable {
 
-    private final String title;
+    private String title;
+    private String duration;
     private String yield;
-    private String time;
     private ArrayList<String> ingredients;
-    private ArrayList<String> steps;
+    private ArrayList<String> instructions;
 
-    public Recipe(String title) {
+    public Recipe(String title, String duration, String yield, ArrayList<String> ingredients, ArrayList<String> instructions) {
         this.title = title;
-    }
-
-    public void setYield(String yield) {
+        this.duration = duration;
         this.yield = yield;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public void setIngredients(ArrayList<String> ingredients) {
         this.ingredients = ingredients;
-    }
-
-    public void setSteps(ArrayList<String> steps) {
-        this.steps = steps;
+        this.instructions = instructions;
     }
 
     public String getTitle() {
         return title;
     }
 
+    public String getDuration() {
+        return duration;
+    }
+
     public String getYield() {
         return yield;
     }
 
-    public String getTime() {
-        return time;
-    }
-
     public ArrayList<String> getIngredients() {
-        return ingredients;
+        return (ArrayList<String>) Collections.unmodifiableList(ingredients);
     }
 
-    public ArrayList<String> getSteps() {
-        return steps;
+    public ArrayList<String> getInstructions() {
+        return (ArrayList<String>) Collections.unmodifiableList(instructions);
     }
+
     protected Recipe(Parcel in) {
         title = in.readString();
+        duration = in.readString();
         yield = in.readString();
-        time = in.readString();
         if (in.readByte() == 0x01) {
             ingredients = new ArrayList<String>();
             in.readList(ingredients, String.class.getClassLoader());
@@ -64,10 +54,10 @@ public class Recipe implements Parcelable{
             ingredients = null;
         }
         if (in.readByte() == 0x01) {
-            steps = new ArrayList<String>();
-            in.readList(steps, String.class.getClassLoader());
+            instructions = new ArrayList<String>();
+            in.readList(instructions, String.class.getClassLoader());
         } else {
-            steps = null;
+            instructions = null;
         }
     }
 
@@ -79,19 +69,19 @@ public class Recipe implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
+        dest.writeString(duration);
         dest.writeString(yield);
-        dest.writeString(time);
         if (ingredients == null) {
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
             dest.writeList(ingredients);
         }
-        if (steps == null) {
+        if (instructions == null) {
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
-            dest.writeList(steps);
+            dest.writeList(instructions);
         }
     }
 
@@ -107,5 +97,19 @@ public class Recipe implements Parcelable{
             return new Recipe[size];
         }
     };
+
+    public String getText() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(title).append("\n");
+        stringBuilder.append(duration).append("\n");
+        stringBuilder.append(yield).append("\n");
+        for (String s: ingredients) {
+            stringBuilder.append(s).append("\n");
+        }
+        for (String s: instructions) {
+            stringBuilder.append(s).append("\n");
+        }
+        return stringBuilder.toString();
+    }
 
 }

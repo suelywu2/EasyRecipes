@@ -7,44 +7,39 @@ import java.util.List;
 public class RecipeBuilder {
 
     private String title;
+    private String duration;
     private String yield;
-    private String time;
     private ArrayList<String> ingredients;
-    private ArrayList<String> steps;
+    private ArrayList<String> instructions;
 
     public RecipeBuilder() {
-        this.steps = new ArrayList<>();
-        this.ingredients = new ArrayList<>();
+        ingredients = new ArrayList<>();
+        instructions = new ArrayList<>();
     }
-
 
     public void title(String title) {
         this.title = title;
+    }
+
+    public void duration(String duration) {
+        this.duration = duration;
     }
 
     public void yield(String yield) {
         this.yield = yield;
     }
 
-    public void time(String time) {
-        this.time = time;
-    }
-
     public void ingredient(String ingredient) {
         this.ingredients.add(ingredient);
     }
 
-    public void step(String aStep) {
-        steps.add(aStep);
+    public void instruction(String instruction) {
+        this.instructions.add(instruction);
     }
 
     public Recipe build() {
-        Recipe recipe = new Recipe(title);
-        recipe.setIngredients(ingredients);
-        recipe.setYield(yield);
-        recipe.setTime(time);
-        recipe.setSteps(steps);
-        return recipe;
+        return new Recipe(title, duration, yield, ingredients, instructions);
     }
 
 }
+
